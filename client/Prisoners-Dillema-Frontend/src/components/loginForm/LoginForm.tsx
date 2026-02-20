@@ -1,8 +1,14 @@
+import './loginForm.css'
+import { postRequest } from '../../utils/apiRequests';
+
+
+
 function LoginForm() {
 
     function handleSubmit(formData: any) {
         const username = formData.get('username')
-        postRequest('/login', { user: username })
+        const response = postRequest('/login', { username })
+        console.log(response)
     }
 
     return (
