@@ -1,14 +1,11 @@
 import './loginForm.css'
-import { io } from "socket.io-client";
-
-export const socket = io("http://localhost:6769");
+import { postRequest } from '../../utils/apiRequests';
 
 function LoginForm() {
 
     function handleSubmit(formData: any) {
         const username = formData.get('username')
-        const response = postRequest('/login', { username })
-        console.log(response)
+        postRequest('/login', { user: username })
     }
 
     return (
