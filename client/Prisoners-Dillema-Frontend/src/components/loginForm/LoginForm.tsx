@@ -1,6 +1,6 @@
 function LoginForm() {
 
-    async function handleSubmit(formData: FormData) {
+    function handleSubmit(formData: any) {
         const username = formData.get('username')
         const response = postRequest('/login', { username })
         console.log(response)
