@@ -1,7 +1,7 @@
 import './loginForm.css'
-import { postRequest } from '../../utils/apiRequests';
+import { io } from "socket.io-client";
 
-
+export const socket = io("http://localhost:6769");
 
 function LoginForm() {
 

@@ -1,7 +1,7 @@
 import express from 'express'
 import http from 'http'
 import { Server } from 'socket.io'
-import { login } from'./controller/login/loginHelper.js'
+import { login } from'./services/login/loginHelper.js'
 
 const app = express()
 const server = http.createServer(app)
@@ -9,12 +9,9 @@ const api = new Server(server, { cors: { origin: "*"}})
 
 const port = 6769
 
-app.post("/api/login", (req, res) => {
-    const user = req?.body?.user
-
-    if(!user) {
-        res.status(500).send("FAILED")
-    }
+api.on('connection', (socket) => {
+    socket.on('login', (data) => {
+        login(data?.user)
 
     const ok = login(req.body.user)
 
