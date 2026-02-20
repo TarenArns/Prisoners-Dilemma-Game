@@ -6,16 +6,21 @@ import { fetchRecord, addRecord } from "./services/database/databaseHelper"
 
 const app = express()
 const server = http.createServer(app)
-const io = new Server(server)
+const api = new Server(server)
 
 const port = 6769
 
 const userList: {} = [];
 
-io.on('login', (socket: any) => {
-    const user = socket.handshake.query.userName
+api.on('connection', (socket: any) => {
+    socket.on('login', (data: any) => {
+        const user = data?.user
+        if(user && !fetchRecord(PLAYER_TABLE, user)) {
+            addRecord(PLAYER_TABLE, {user: user})
+        }
 
-    if(user && !fetchRecord(PLAYER_TABLE, user)) {
-        addRecord(PLAYER_TABLE, user)
-    }
+        socket.emit("login_response", { status: "success", message: "Logged in"})
+    })
+
 })
+
