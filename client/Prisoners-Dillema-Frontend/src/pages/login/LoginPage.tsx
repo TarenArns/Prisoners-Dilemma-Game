@@ -1,11 +1,10 @@
 import LoginForm from '../../components/loginForm/LoginForm'
-import './LoginPage.css'
 
 function LoginPage() {
   return (
-    <div className="LoginPage">
-      <h2>Welcome to the prisoners dillema game</h2>
-      <text> please type in a username and submin in order to join the game</text>
+    <div className="flex flex-col items-center justify-center">
+      <h2 className="text-3xl font-bold mb-4 text-gray-800">Welcome to the prisoners dillema game</h2>
+      <p className="text-gray-600 mb-6 text-center">please type in a username and submin in order to join the game</p>
       <LoginForm />
     </div>
   )
