@@ -1,26 +1,24 @@
-const express = require('express')
-const http = require('http')
-const { Server } = require("socket.io")
-import { PLAYER_TABLE, GAME_TABLE } from "./services/database/constants"
-import { fetchRecord, addRecord } from "./services/database/databaseHelper"
+import express from 'express'
+import http from 'http'
+import { Server } from 'socket.io'
+import { login } from'./services/login/loginHelper.js'
 
 const app = express()
 const server = http.createServer(app)
-const api = new Server(server)
+const api = new Server(server, { cors: { origin: "*"}})
 
 const port = 6769
 
-const userList: {} = [];
+api.on('connection', (socket) => {
+    socket.on('login', (data) => {
+        login(data?.user)
 
-api.on('connection', (socket: any) => {
-    socket.on('login', (data: any) => {
-        const user = data?.user
-        if(user && !fetchRecord(PLAYER_TABLE, user)) {
-            addRecord(PLAYER_TABLE, {user: user})
-        }
-
-        socket.emit("login_response", { status: "success", message: "Logged in"})
+        socket.emit("request_response", { status: "success", message: "Logged in"})
     })
 
 })
+
+server.listen(port, () => {
+    console.log(`Server running on port ${port}`);
+});
 
