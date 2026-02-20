@@ -2,8 +2,7 @@ function LoginForm() {
 
     function handleSubmit(formData: any) {
         const username = formData.get('username')
-        const response = postRequest('/login', { username })
-        console.log(response)
+        postRequest('/login', { user: username })
     }
 
     return (

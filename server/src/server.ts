@@ -13,7 +13,7 @@ api.on('connection', (socket) => {
     socket.on('login', (data) => {
         login(data?.user)
 
-        socket.emit("login_response", { status: "success", message: "Logged in"})
+        socket.emit("request_response", { status: "success", message: "Logged in"})
     })
 
 })
