@@ -1,32 +1,21 @@
-import Router, {Response, Request} from 'express';
+const express = require('express')
+const http = require('http')
+const { Server } = require("socket.io")
+import { PLAYER_TABLE, GAME_TABLE } from "./services/database/constants"
+import { fetchRecord } from "./services/database/databaseHelper"
 
-const router = Router()
+const app = express()
+const server = http.createServer(app)
+const io = new Server(server)
+
 const port = 6769
 
-router.post('/login', (req: Request, res: Response) => {
-    res.status(200).end("test");
-});
+const userList: {} = [];
 
-router.post('/join', (req: Request, res: Response) => {
+io.on('login', (socket) => {
+    const user = socket.handshake.query.userName
 
-});
+    if(user && !fetchRecord(PLAYER_TABLE, user)) {
 
-router.post('/action', (req: Request, res: Response) => {
-    
-});
-
-router.get('/:gameId/gamestate', (req: Request, res: Response) => {
-    
-});
-
-router.get('/playerStats/:playerId', (req: Request, res: Response) => {
-    
-});
-
-router.get('/playerStats', (req: Request, res: Response) => {
-    
-});
-
-router.post('/create', (req: Request, res: Response) => {
-    
-});
+    }
+})
