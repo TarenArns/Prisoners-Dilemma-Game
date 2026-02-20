@@ -2,10 +2,8 @@ function LoginForm() {
 
     async function handleSubmit(formData: FormData) {
         const username = formData.get('username')
-        let url = 'http://localhost:6769/api/login';
-
-        const response = await axios.post(url, {user: username});
-        console.log(response.data)
+        const response = postRequest('/login', { username })
+        console.log(response)
     }
 
     return (
