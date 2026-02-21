@@ -40,7 +40,7 @@ app.post("/login", async (req, res) => {
     const user = req?.body?.user
 
     if(!user) {
-        res.status(500).send("FAILED")
+        return res.status(500).send("FAILED")
     }
 
     const ok = await login(req.body.user)
