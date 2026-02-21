@@ -20,7 +20,7 @@ function PlayerHalfScreen({ playerName, bgColor, avatarBgColor, isClient }: Play
     }
 
     useEffect(() => {
-        socket?.on('gameState', (data) => {
+        socket?.on('gameState', () => {
             setWaiting(false)
         }
         )
