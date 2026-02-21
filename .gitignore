@@ -2,3 +2,4 @@
 server/dist
 server/package-lock.json
 client/Prisoners-Dillema-Frontend/package-lock.json
+flake*

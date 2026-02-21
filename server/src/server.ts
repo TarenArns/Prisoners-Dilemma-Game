@@ -1,4 +1,5 @@
 import express from 'express'
+import cors from 'cors'
 import http from 'http'
 import { Server } from 'socket.io'
 import { login } from './controller/login/loginHelper.js'
@@ -11,6 +12,12 @@ import { Player } from "./services/entity/Player.js"
 
 
 const app = express()
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true
+}));
+app.use(express.json())
+
 const server = http.createServer(app)
 const api = new Server(server, { cors: { origin: "*" } })
 
@@ -30,8 +37,8 @@ try {
   console.log(error)
 }
 
-app.post("/api/login", (req, res) => {
-  const user = req?.body?.user
+app.post("/login", (req, res) => {
+    const user = req?.body?.user
 
   if (!user) {
     res.status(500).send("FAILED")
@@ -39,17 +46,19 @@ app.post("/api/login", (req, res) => {
 
   const ok = login(req.body.user)
 
-  if (ok) {
-    res.cookie('token', user, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'lax',
-      maxAge: 7200000
-    })
+    if(ok) {
+        res.cookie('token', user, {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'lax',
+            maxAge: 7200000
+        })
 
-    res.status(200).json({ message: "SUCCESS" })
-  }
-
+        res.status(200).send("SUCCESS")
+    }
+    else {
+        res.status(401).send("FAIL")
+    }
 })
 
 api.on('connection', (socket) => {
