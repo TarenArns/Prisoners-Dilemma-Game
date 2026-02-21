@@ -1,5 +1,5 @@
 import { useSocket } from "../../hooks/useSocket";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface PlayerPanelProps {
     playerName: string;
@@ -44,7 +44,4 @@ function PlayerHalfScreen({ playerName, bgColor, avatarBgColor, isClient }: Play
 }
 
 export default PlayerHalfScreen
-function useState<T>(arg0: boolean): [any, any] {
-    throw new Error("Function not implemented.");
-}
 
