@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react"
 import { useSocket } from "../../hooks/useSocket"
+import { useNavigate } from "react-router-dom"
 
 function Lobby() {
     const [players, setPlayers] = useState<any[]>([])
 
     const socket = useSocket()
+    const navigate = useNavigate()
 
 
     useEffect(() => {
@@ -15,9 +17,13 @@ function Lobby() {
         socket.on('playerStatsAll_success', (data: any) => {
            setPlayers(data)
         })
+        socket.on('gameStart_success', () => {
+            navigate('/game')
+        })
 
         return () => {
             socket.off('playerStatsAll_success')
+            socket.off('gameStart_success')
         }
     }, [socket]);
 
@@ -46,7 +52,7 @@ function Lobby() {
                 <div className='flex flex-col'>
                     <h2 className='text-3xl font-bold mb-4 text-gray-800'>You're in the lobby now</h2>
                     <p className='text-gray-600'>wait for the host to start the game. if you are the host, please start the game man, wer are all waiting</p>
-                    <button className='mt-4 bg-secondary hover:bg-primary text-white font-bold py-2 px-4 rounded w-32'>
+                    <button onClick={() => socket.emit('gameStart')} className='mt-4 bg-secondary hover:bg-primary text-white font-bold py-2 px-4 rounded w-32'>
                         Start Game
                     </button>
                 </div>
