@@ -1,0 +1,16 @@
+import { Game } from '../../services/index.js'
+import { SINGLE_PLAYER } from './constants.js'
+import { PrisType } from '../../constants/bots.js'
+
+export function createGame(type: string) {
+    const game = new Game()
+
+    if(type == SINGLE_PLAYER) {
+        game.addPrisoner(PrisType.cooperator, "bot")
+        game.addPrisoner(PrisType.defecator, "bot")
+        game.addPrisoner(PrisType.random, "bot")
+        game.addPrisoner(PrisType.tit4tat, "bot")
+    }
+
+    return game
+}

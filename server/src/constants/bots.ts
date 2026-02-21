@@ -1,5 +1,8 @@
 
-//tit for tat, Cooperator, Defecator
-export const BOT_TIT = 'tit_for_tat'
-export const BOT_COOPERATOR = 'cooperator'
-export const BOT_DEFECATOR = 'defecator'
+export const PrisType = {
+    // player: "Player",
+    random: "Random",
+    cooperator: "Cooperator",
+    defecator: "Defecator",
+    tit4tat: "Tit4Tat",
+} as const;

@@ -6,7 +6,7 @@ import { login } from './controller/login/loginHelper.js'
 import "reflect-metadata"
 import { DataSource } from "typeorm"
 import { Player } from "./services/entity/Player.js"
-import { createGame } from "./controller/game/initGame.js"
+import { createGame } from "./controller/game/game.js"
 import { Game } from "./services/index.js"
 import { getLeaderboard } from './controller/game/stats.js'
 
@@ -99,7 +99,7 @@ api.on('connection', (socket) => {
                 gameSingleton = createGame(typeGame)
             }
 
-            gameSingleton.addPrisoner({[token]: 'player'})
+            gameSingleton.addPrisoner(token, 'player')
             
             socket.emit('join_success', {message: "SUCCESS"})
         }

@@ -30,13 +30,6 @@ const SCORING = { // SCORING[choice1][choice2] returns [score1, score2]
 const Choice = { def: false, coop: true } as const
 type Choice = (typeof Choice)[keyof typeof Choice]
 
-const PrisType = {
-    // player: "Player",
-    random: "Random",
-    cooperator: "Cooperator",
-    defecator: "Defecator",
-    tit4tat: "Tit4Tat",
-} as const;
 type PrisType = (typeof PrisType)[keyof typeof PrisType]
 
 const choose = (type: PrisType, history: Choice[]) => {
@@ -116,7 +109,7 @@ class Match {
     }
 }
 
-class Game {
+export class Game {
     private _prisoners: Prisoner[] = []
 
     public async run() {
