@@ -1,15 +1,22 @@
 import express from 'express'
+import cors from 'cors'
 import http from 'http'
 import { Server } from 'socket.io'
 import { login } from'./controller/login/loginHelper.js'
 
 const app = express()
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true
+}));
+app.use(express.json())
+
 const server = http.createServer(app)
 const api = new Server(server, { cors: { origin: "*"}})
 
 const port = 6769
 
-app.post("/api/login", (req, res) => {
+app.post("/login", (req, res) => {
     const user = req?.body?.user
 
     if(!user) {
@@ -21,14 +28,16 @@ app.post("/api/login", (req, res) => {
     if(ok) {
         res.cookie('token', user, {
             httpOnly: true,
-            secure: true,
+            secure: false,
             sameSite: 'lax',
             maxAge: 7200000
         })
 
-        res.status(200).json({message: "SUCCESS"})
+        res.status(200).send("SUCCESS")
     }
-    
+    else {
+        res.status(401).send("FAIL")
+    }
 })
 
 api.on('connection', (socket) => {

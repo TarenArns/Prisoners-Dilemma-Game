@@ -4,7 +4,7 @@ import { PLAYER_TABLE } from "../../services/database/constants.js"
 export function login(user: string) {
     try {
         if(user && !fetchRecord(PLAYER_TABLE, user)) {
-            addRecord(PLAYER_TABLE, {user: user})
+            addRecord(PLAYER_TABLE, {"user": user})
             return true
         }
     }
