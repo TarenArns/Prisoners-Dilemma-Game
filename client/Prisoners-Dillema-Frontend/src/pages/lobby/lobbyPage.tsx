@@ -1,3 +1,4 @@
+import { useSocket } from "../../hooks/useSocket"
 
 function Lobby() {
     const players = [
@@ -7,6 +8,8 @@ function Lobby() {
         { name: 'Nakul', points: 6, blameRatio: '3/1' },
         { name: 'Daniel', points: 88, blameRatio: '1/651981' },
     ]
+
+    const socket=useSocket()
 
     return (
         <div className='flex bg-tertiary h-screen w-screen p-8'>

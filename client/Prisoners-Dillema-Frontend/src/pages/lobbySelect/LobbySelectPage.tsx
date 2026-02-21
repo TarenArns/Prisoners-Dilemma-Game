@@ -1,16 +1,18 @@
 import LobbySelectButtons from '../../components/lobbySelectButtons/LobbySelectButtons'
 import { useSocket } from '../../hooks/useSocket'
+import { useNavigate } from 'react-router-dom'
 
 
 
 function LobbySelect() {
 
   const socket = useSocket()
+  const navigate = useNavigate()
   socket.connect()
 
   function handleDisconnect() {
     socket.disconnect()
-    window.location.href = "/login";
+    navigate("/login")
   }
 
   return (

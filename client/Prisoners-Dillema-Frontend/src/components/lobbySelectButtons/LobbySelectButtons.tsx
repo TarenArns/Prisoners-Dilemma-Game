@@ -1,13 +1,27 @@
 import { useSocket } from "../../hooks/useSocket";
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 function LobbySelectButtons() {
-
-
     const socket = useSocket();
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const handleLobbyJoined = () => {
+            navigate("/lobby");
+        };
+
+        socket?.on('join_success', handleLobbyJoined);
+
+        return () => {
+            socket?.off('lobbyJoined', handleLobbyJoined);
+        };
+    }, [socket, navigate]);
 
     function handleJoinPublicLobby() {
-        // todo join lobby
+        socket?.emit('join');
     }
+
 
     return (
         <div className='lobbySelectContainer flex flex-col gap-4'>
