@@ -10,7 +10,6 @@ function Leaderboard({ players }: LeaderboardProps) {
                 <tr>
                     <th className='border border-primary px-4 py-2'>Player</th>
                     <th className='border border-primary px-4 py-2'>Points</th>
-                    <th className='border border-primary px-4 py-2'>Blame/Don't</th>
                 </tr>
             </thead>
             <tbody>
@@ -18,7 +17,6 @@ function Leaderboard({ players }: LeaderboardProps) {
                     <tr key={player.name}>
                         <td className='border border-primary px-4 py-2'>{player.name}</td>
                         <td className='border border-primary px-4 py-2 text-center'>{player.points}</td>
-                        <td className='border border-primary px-4 py-2 text-center'>{player.blameRatio}</td>
                     </tr>
                 ))}
             </tbody>
