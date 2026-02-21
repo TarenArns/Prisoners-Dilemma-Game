@@ -7,7 +7,7 @@ function LoginPage() {
   if (width < 723) {
     return (
       <div className="flex-block h-screen w-screen">
-        <div className="bg-secondary flex-auto flex-col justify-center p-14">
+        <div className="w-1/2 bg-secondary flex-auto flex-col justify-center p-14">
           <h1 className="text-6xl font-black mb-8 text-gray-900 tracking-tight drop-shadow-lg">Prisoner's Dilemma</h1>
           <p className="text-lg text-gray-900 max-w-lg leading-relaxed">
             You will simulate the prisoners dilemma against other players, instead of jail time you're playing for points.
