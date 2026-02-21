@@ -9,6 +9,6 @@ export function getRequest(endpoint: string) {
 export async function postRequest(endpoint: string, payload: any) {
   let url = `${BACKEND_URL}${endpoint}`;
 
-  const response = await axios.post(url, payload);
+  const response = await axios.post(url, payload, { withCredentials: true });
   return response;
 }
