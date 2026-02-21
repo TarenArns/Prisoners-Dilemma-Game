@@ -88,6 +88,7 @@ class Prisoner {
         let c: Choice
         if (this._type == "Player") {
             c = await this.waitForChoice()
+            console.log(`Player chose ${c}`)
         } else {
             c = await new Promise<Choice>((resolve) => {
                 resolve(choose(this._type, oppHist))
@@ -111,6 +112,19 @@ class Match {
     private h2: Choice[]
     private length: number
     private scoring = DEFAULT_SCORING
+    private ready = true
+
+    public async getHistory(user: string) {
+        await new Promise(() => {while (!this.ready);})
+        switch (user) {
+            case this.p1.user :
+                return [this.h1, this.h2]
+            case this.p2.user :
+                return [this.h2, this.h1]
+            default :
+                return [[], []]
+        }
+    }
 
     public constructor(p1: Prisoner, p2: Prisoner, length: number, 
                        scoring: {false: {true: number[], false: number[]},
@@ -126,11 +140,15 @@ class Match {
     public async run() {
         for (let i=0; i<this.length; i++) {
 
+            this.ready = false
+
             // request choice from both players
             let choices = await Promise.all([
                 this.p1.makeChoice(this.h2),
                 this.p2.makeChoice(this.h1) // TODO: concurrency in history 
             ])
+
+            this.ready = true
 
             this.h1.push(choices[0])
             this.h2.push(choices[1])
@@ -149,12 +167,10 @@ export class Game {
     private _prisoners: Prisoner[] = []
     private matchThreads: Promise<void>[] = []
     
-    private matchMap: Record<string, Promise<void>> = {};
-
-    // map each player to the match they're in -> how?
+    private matchMap: Record<string, Match> = {};
 
     public async getHistory(user: string) {
-
+        return this.matchMap[user].getHistory(user)
     }
 
     public async makeChoice(user: string, c: Choice) {
@@ -170,8 +186,8 @@ export class Game {
             for (let j = +i + 1; j < this._prisoners.length; j++) {
                 let p2 = this._prisoners[j];
 
-                let m = new Match(p1, p2, MATCH_ROUNDS, DEFAULT_SCORING).run()
-                this.matchThreads.push(m)
+                let m = new Match(p1, p2, MATCH_ROUNDS, DEFAULT_SCORING)
+                this.matchThreads.push(m.run())
                 this.matchMap[p1.user] = m
                 this.matchMap[p2.user] = m
             }
@@ -198,6 +214,7 @@ export class Game {
  * vvv MAIN vvv
  **************************************************/
 
+/*
 let g = new Game()
 
 g.addPrisoner("Leon", "Tit4Tat")
@@ -206,3 +223,4 @@ g.addPrisoner("Taren", "Random")
 g.addPrisoner("Miguel", "Random")
 
 await g.run()
+*/
