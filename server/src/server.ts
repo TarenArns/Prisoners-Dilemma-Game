@@ -121,17 +121,21 @@ api.on('connection', async (socket) => {
         }
     })
 
-    socket.on('action', (decision) => {
+    socket.on('action', async (decision) => {
         try {
+            console.log("test")
             if(gameSingleton) {
-                gameSingleton.makeChoice(token, decision);
+                console.log(`decision: ${decision}`)
+                await gameSingleton.makeChoice(token, decision);
                 socket.emit('action_success', {message: 'success'}) 
             }
             else {
+                console.log("error happened wtf")
                 socket.emit('action_fail', {message: "FAIL"})
             }     
         }
-        catch {
+        catch (error) {
+            console.log(error)
             socket.emit('action_fail', {message: "FAIL"})
         }
     })
@@ -152,7 +156,8 @@ api.on('connection', async (socket) => {
     })
 
     if(gameSingleton) {
-        const history = [[],[]] // await gameSingleton.getHistory(token)
+        //const history = [[],[]] // await gameSingleton.getHistory(token)
+        //const history = await gameSingleton.getHistory(token)
         socket.emit('gameState', history)
     }
 })
