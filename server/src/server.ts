@@ -1,32 +1,53 @@
 import express from 'express'
 import http from 'http'
 import { Server } from 'socket.io'
-import { login } from'./controller/login/loginHelper.js'
+import { login } from './controller/login/loginHelper.js'
 
-import { fetchRecord, addRecord } from "./services/database/databaseHelper"
+import { fetchRecord, addRecord } from "./services/database/databaseHelper.js"
 
 import "reflect-metadata"
 import { DataSource } from "typeorm"
-import { Player } from "./services/entity/Player"
+import { Player } from "./services/entity/Player.js"
 
 
 const app = express()
 const server = http.createServer(app)
-const api = new Server(server, { cors: { origin: "*"}})
+const api = new Server(server, { cors: { origin: "*" } })
 
 const port = 6769
 
-api.on('connection', (socket) => {
-    socket.on('login', (data) => {
-        login(data?.user)
+app.post("/api/login", (req, res) => {
+  const user = req?.body?.user
 
-        socket.emit("request_response", { status: "success", message: "Logged in"})
+  if (!user) {
+    res.status(500).send("FAILED")
+  }
+
+  const ok = login(req.body.user)
+
+  if (ok) {
+    res.cookie('token', user, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
+      maxAge: 7200000
     })
+
+    res.status(200).json({ message: "SUCCESS" })
+  }
+
+})
+
+api.on('connection', (socket) => {
+  socket.on('login', (data) => {
+    login(data?.user)
+    socket.emit("request_response", { status: "success", message: "Logged in" })
+  })
 
 })
 
 server.listen(port, () => {
-    console.log(`Server running on port ${port}`);
+  console.log(`Server running on port ${port}`);
 });
 
 
