@@ -13,10 +13,10 @@ export function createGame(type: string) {
         game.addPrisoner("bot3", PrisType.random)
         game.addPrisoner("bot4", PrisType.tit4tat)
 
-        addRecord("bot1")
-        addRecord("bot2")
-        addRecord("bot3")
-        addRecord("bot4")
+        addRecord({"user":"bot1"})
+        addRecord({"user":"bot2"})
+        addRecord({"user":"bot3"})
+        addRecord({"user":"bot4"})
     }
 
     return game

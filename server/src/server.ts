@@ -152,7 +152,7 @@ api.on('connection', async (socket) => {
     })
 
     if(gameSingleton) {
-        const history = await gameSingleton.getHistory()
+        const history = [[],[]] // await gameSingleton.getHistory(token)
         socket.emit('gameState', history)
     }
 })

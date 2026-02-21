@@ -148,8 +148,12 @@ export class Game {
 
     // map each player to the match they're in -> how?
 
-    public async getHistory(user: string) {
+    public constructor() {
 
+    }
+
+    public async getHistory(user: string) {
+        return [[], []]
     }
 
     public async makeChoice(user: string, c: Choice) {
