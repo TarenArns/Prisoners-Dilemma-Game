@@ -6,10 +6,10 @@ export function createGame(type: string) {
     const game = new Game()
 
     if(type == SINGLE_PLAYER) {
-        game.addPrisoner(PrisType.cooperator, "bot")
-        game.addPrisoner(PrisType.defecator, "bot")
-        game.addPrisoner(PrisType.random, "bot")
-        game.addPrisoner(PrisType.tit4tat, "bot")
+        game.addPrisoner("bot1", PrisType.cooperator)
+        game.addPrisoner("bot2", PrisType.defecator)
+        game.addPrisoner("bot3", PrisType.random)
+        game.addPrisoner("bot4", PrisType.tit4tat)
     }
 
     return game

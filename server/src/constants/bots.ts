@@ -1,6 +1,6 @@
 
 export const PrisType = {
-    // player: "Player",
+    player: "Player",
     random: "Random",
     cooperator: "Cooperator",
     defecator: "Defecator",

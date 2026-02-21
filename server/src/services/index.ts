@@ -1,3 +1,5 @@
+import { PrisType } from "../constants/bots.js";
+
 /* 
     STATES:
     1. Wait for players (one player connected -> 2)
@@ -34,6 +36,8 @@ type PrisType = (typeof PrisType)[keyof typeof PrisType]
 
 const choose = (type: PrisType, history: Choice[]) => {
     switch (type) {
+        case PrisType.player :
+            return false
         case PrisType.random :
             return Math.random() < 0.5
         case PrisType.cooperator : 

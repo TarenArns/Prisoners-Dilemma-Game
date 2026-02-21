@@ -1,6 +1,6 @@
 import express from 'express'
 import cors from 'cors'
-import http from 'http'
+import http, { get } from 'http'
 import { Server } from 'socket.io'
 import { login } from './controller/login/loginHelper.js'
 import "reflect-metadata"
@@ -9,6 +9,7 @@ import { Player } from "./services/entity/Player.js"
 import { createGame } from "./controller/game/game.js"
 import { Game } from "./services/index.js"
 import { getLeaderboard } from './controller/game/stats.js'
+import { PrisType } from './constants/bots.js'
 
 const app = express()
 app.use(cors({
@@ -99,7 +100,7 @@ api.on('connection', (socket) => {
                 gameSingleton = createGame(typeGame)
             }
 
-            gameSingleton.addPrisoner(token, 'player')
+            gameSingleton.addPrisoner(token, PrisType.player)
             
             socket.emit('join_success', {message: "SUCCESS"})
         }
@@ -109,10 +110,10 @@ api.on('connection', (socket) => {
         }
     })
 
-    socket.on('playerStatsAll', () => {
+    socket.on('playerStatsAll', async () => {
         try {
-            const leader = getLeaderboard()
-            socket.emit('playerStatsAll_success', getLeaderboard())
+            const leader = await getLeaderboard()
+            socket.emit('playerStatsAll_success', leader)
         }
         catch (error) {
             console.log(error)

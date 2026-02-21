@@ -1,34 +1,24 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useSocket } from "../../hooks/useSocket"
 
 function Lobby() {
-    const players: any[] = []
+    const [players, setPlayers] = useState<any[]>([])
 
     const socket = useSocket()
 
+
     useEffect(() => {
-        socket?.emit('playerStatsAll')
-        socket?.on('playerStatsAll_success', (data: any) => {
-            console.log(data)
-            data.forEach((player: any) => {
-                players.push({
-                    name: player.playerName,
-                    points: player.points,
-                })
-            })
-        })
+        socket.emit('playerStatsAll')
     }, []);
 
     useEffect(() => {
-        socket?.on('playerStatsAll_success', (data: any) => {
-            console.log(data)
-            data.forEach((player: any) => {
-                players.push({
-                    name: player.playerName,
-                    points: player.points,
-                })
-            })
+        socket.on('playerStatsAll_success', (data: any) => {
+           setPlayers(data)
         })
+
+        return () => {
+            socket.off('playerStatsAll_success')
+        }
     }, [socket]);
 
     return (
@@ -44,10 +34,10 @@ function Lobby() {
                             </tr>
                         </thead>
                         <tbody>
-                            {players.map((player) => (
-                                <tr key={player.name}>
-                                    <td className='border border-primary px-4 py-2'>{player.name}</td>
-                                    <td className='border border-primary px-4 py-2 text-center'>{player.points}</td>
+                            {Object.entries(players).map(([name, points]) => (
+                                <tr key={name}>
+                                    <td className='border border-primary px-4 py-2'>{name}</td>
+                                    <td className='border border-primary px-4 py-2 text-center'>{points as number}</td>
                                 </tr>
                             ))}
                         </tbody>
