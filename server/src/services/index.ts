@@ -20,17 +20,14 @@
 
 const MATCH_ROUNDS = 10
 
-enum Choice { def=0, coop }
-
-// TODO: scores could be configurable
+// TODO: scores could be configurable?
 const SCORING = { // SCORING[choice1][choice2] returns [score1, score2]
-    [Choice.def]: { // TODO: 2(cc) > (cd) + (dc) is a condition?
-        [Choice.def]: [1, 1], [Choice.coop]: [3, 0]
-    },
-    [Choice.coop]: {
-        [Choice.def]: [0, 3], [Choice.coop]: [2, 2]
-    }
+    // TODO: 2(cc) > (cd) + (dc) is a condition?
+    0: { 0: [1, 1], 1: [3, 0] },
+    1: { 0: [0, 3], 1: [2, 2] }
 }
+
+enum Choice { def=0, coop }
 
 abstract class Prisoner {
     private _user: string;
@@ -113,10 +110,10 @@ class Match {
 }
 
 class Tournament {
-    public players: Prisoner[]
+    public prisoners: Prisoner[]
 
     public constructor(players: Prisoner[]) {
-        this.players = players;
+        this.prisoners = players;
     }
 }
 
@@ -132,16 +129,16 @@ let trnmt: Tournament = new Tournament(
 )
 
 // Pair up all players
-for (let i=0; i<trnmt.players.length; i++) {
-    let p1 = trnmt.players[i];
-    for (let j=i+1; j<trnmt.players.length; j++) {
-        let p2 = trnmt.players[j];
+for (let i=0; i<trnmt.prisoners.length; i++) {
+    let p1 = trnmt.prisoners[i];
+    for (let j=i+1; j<trnmt.prisoners.length; j++) {
+        let p2 = trnmt.prisoners[j];
 
         let match: Match = new Match(p1, p2, MATCH_ROUNDS);
         match.run();
     }
 }
 
-for (let p of trnmt.players) {
+for (let p of trnmt.prisoners) {
     console.log(`${p.user}: ${p.score}`)
 }
