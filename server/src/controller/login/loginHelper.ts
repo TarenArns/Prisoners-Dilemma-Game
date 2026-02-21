@@ -1,15 +1,14 @@
 import { fetchRecord, addRecord } from "../../services/database/databaseHelper.js"
-import { PLAYER_TABLE } from "../../services/database/constants.js"
 
-export function login(user: string) {
+export async function login(user: string) {
     try {
-        if(user && !fetchRecord(PLAYER_TABLE, user)) {
-            addRecord(PLAYER_TABLE, {user: user})
+        if(user && !(await fetchRecord(user))) {
+            addRecord({"user": user})
             return true
         }
     }
     catch(error) {
-        console.log(error)
+        console.log("ERROR IN LOGIN:" + error)
     }
 
     return false
