@@ -12,14 +12,17 @@ function LobbySelectButtons() {
         };
 
         socket?.on('join_success', handleLobbyJoined);
-
+        socket?.on('join_failed', () => {
+            alert(`Failed to join lobby`);
+        }
+        )
         return () => {
             socket?.off('lobbyJoined', handleLobbyJoined);
         };
     }, [socket, navigate]);
 
     function handleJoinPublicLobby() {
-        socket?.emit('join');
+        socket?.emit('join', 'single');
     }
 
 
