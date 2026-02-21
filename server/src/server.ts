@@ -40,11 +40,11 @@ try {
 app.post("/login", (req, res) => {
     const user = req?.body?.user
 
-  if (!user) {
-    res.status(500).send("FAILED")
-  }
+    if (!user) {
+        res.status(500).send("FAILED")
+    }
 
-  const ok = login(req.body.user)
+    const ok = login(req.body.user)
 
     if(ok) {
         res.cookie('token', user, {
