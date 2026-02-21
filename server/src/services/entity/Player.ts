@@ -1,9 +1,9 @@
-import { Entity, Column } from "typeorm";
+import { Entity, Column, PrimaryColumn } from "typeorm";
 
 @Entity()
 export class Player {
 
-  @Column({ type: "varchar", unique: true })
+  @PrimaryColumn({ type: "varchar", unique: true })
   username: string
 
   @Column()
@@ -21,4 +21,14 @@ export class Player {
   @Column()
   defectCount: number
 
+  constructor(
+    username: string,
+  ) {
+    this.username = username
+    this.currentScore = 0
+    this.totalScore = 0
+    this.totalWins = 0
+    this.colludeCount = 0
+    this.defectCount = 0
+  }
 }

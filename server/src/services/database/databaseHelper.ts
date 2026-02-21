@@ -1,19 +1,54 @@
-type databaseKey = {
-    key: string
-    value: string
-}
-export function addRecord(table: any, fields: any) {
-    
-}
+import { databaseKey } from "./constants"
+import { Player } from "../entity/Player"
+import { AppDataSource } from "../../server"
 
-export function updateRecord(table: any, key: databaseKey, fields: any) {
 
-}
+export async function addRecord(fields: any) {
+  let username = fields["username"]
 
-export function deleteRecord(table: any, key: string, fields: any) {
+  const player = new Player(username)
 
+  await AppDataSource.manager.save(player)
 }
 
-export function fetchRecord(tabe: any, key: string) {
-    return null
+export async function updateRecord(key: databaseKey, fields: any) {
+  const playerRepository = AppDataSource.getRepository(Player)
+  const playerToUpdate = await playerRepository.findOneBy({ username: key.value })
+  if (!playerToUpdate) {
+    console.log("User with username ${key.value} not found.")
+    return
+  }
+
+  playerToUpdate.colludeCount = fields["colludeCount"]
+  playerToUpdate.currentScore = fields["currentScore"]
+  playerToUpdate.defectCount = fields["defectCount"]
+  playerToUpdate.totalScore = fields["totalScore"]
+  playerToUpdate.totalWins = fields["totalWins"]
+
+  await playerRepository.save(playerToUpdate)
+
+}
+
+export async function deleteRecord(key: databaseKey, fields: any) {
+  const playerRepository = AppDataSource.getRepository(Player)
+  const playerToRemove = await playerRepository.findOneBy({ username: key.value })
+
+  if (!playerToRemove) {
+    console.log("User with username ${key.value} not found.")
+    return
+  }
+
+  await playerRepository.remove(playerToRemove)
+}
+
+export async function fetchRecord(key: databaseKey) {
+  const playerRepository = AppDataSource.getRepository(Player)
+  const player = await playerRepository.findOneBy({ username: key.value })
+
+  if (!player) {
+    console.log("User with username ${key.value} not found.")
+    return
+  }
+
+  return player
 }

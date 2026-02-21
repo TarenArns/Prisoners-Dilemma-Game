@@ -7,7 +7,11 @@ const http = require('http')
 const { Server } = require("socket.io")
 import { PLAYER_TABLE, GAME_TABLE } from "./services/database/constants"
 import { fetchRecord, addRecord } from "./services/database/databaseHelper"
+
 import "reflect-metadata"
+import { DataSource } from "typeorm"
+import { Player } from "./services/entity/Player"
+
 
 const app = express()
 const server = http.createServer(app)
@@ -28,10 +32,25 @@ server.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
 
+
+export const AppDataSource = new DataSource({
+  type: "sqlite",
+  database: "prisoners.db",
+  entities: [Player],
+  synchronize: true,
+  logging: false,
+})
+
+try {
+  AppDataSource.initialize()
+} catch (error) {
+  console.log(error)
+}
+
 io.on('login', (socket: any) => {
   const user = socket.handshake.query.userName
 
-  if (user && !fetchRecord(PLAYER_TABLE, user)) {
-    addRecord(PLAYER_TABLE, user)
+  if (user && !fetchRecord(user)) {
+    addRecord({ username: user })
   }
 })
