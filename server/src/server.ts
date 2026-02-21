@@ -9,6 +9,7 @@ import { Player } from "./services/entity/Player.js"
 import { createGame } from "./controller/game/game.js"
 import { Game } from "./services/index.js"
 import { getLeaderboard } from './controller/game/stats.js'
+import { PrisType } from './constants/bots.js'
 
 const app = express()
 app.use(cors({
@@ -99,7 +100,7 @@ api.on('connection', (socket) => {
                 gameSingleton = createGame(typeGame)
             }
 
-            gameSingleton.addPrisoner(token, 'player')
+            gameSingleton.addPrisoner(token, PrisType.player)
             
             socket.emit('join_success', {message: "SUCCESS"})
         }
@@ -109,14 +110,24 @@ api.on('connection', (socket) => {
         }
     })
 
-    socket.on('playerStatsAll', () => {
+    socket.on('playerStatsAll', async () => {
         try {
-            const leader = getLeaderboard()
+            const leader = await getLeaderboard()
             socket.emit('playerStatsAll_success', getLeaderboard())
         }
         catch (error) {
             console.log(error)
             socket.emit('playerStats_failed', {message: "FAIL"})
+        }
+    })
+
+    socket.on('action', (decision) => {
+        try {
+            gameSingleton.makeChoice(token, decision);
+            socket.emit('action_success', {message: 'success'})        
+        }
+        catch {
+            socket.emit('action_fail', {message: "FAIL"})
         }
     })
 })

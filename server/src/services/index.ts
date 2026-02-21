@@ -1,3 +1,6 @@
+
+import { PrisType } from "../constants/bots.js"
+
 /* 
     STATES:
     1. Wait for players (one player connected -> 2)
@@ -44,6 +47,8 @@ const choose = (type: PrisType, history: Choice[]) => {
             if (history[history.length-1] == Choice.def) {
                 return Choice.def
             } else return Choice.coop
+        case PrisType.player :
+            return false
     }
 }
 
