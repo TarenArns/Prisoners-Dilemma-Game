@@ -1,6 +1,6 @@
-import { databaseKey } from "./constants"
-import { Player } from "../entity/Player"
-import { AppDataSource } from "../../server"
+import { databaseKey } from "./constants.js"
+import { Player } from "../entity/Player.js"
+import { AppDataSource } from "../../server.js"
 
 
 export async function addRecord(fields: any) {
