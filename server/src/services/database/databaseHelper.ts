@@ -55,3 +55,15 @@ export async function fetchRecord(key: string) {
 
   return player
 }
+
+export async function fetchRecordAll() {
+  const playerRepository = AppDataSource.getRepository(Player)
+  const players = await playerRepository.find()
+
+  if (!players) {
+    console.log(`No records found.`)
+    return null
+  }
+
+  return players
+}
