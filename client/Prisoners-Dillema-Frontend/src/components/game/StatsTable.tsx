@@ -1,4 +1,21 @@
+import { useEffect } from "react"
+import { useSocket } from "../../hooks/useSocket"
+
 function StatsTable() {
+
+    const socket = useSocket()
+
+    useEffect(() => {
+        socket?.on('gameState', (data) => {
+            console.log(data)
+        }
+        )
+        return () => {
+            socket?.off('gameState');
+        };
+    }, [socket]);
+
+
     return (
         <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-tertiary rounded-lg shadow-lg p-4'>
             <table className='border-collapse'>

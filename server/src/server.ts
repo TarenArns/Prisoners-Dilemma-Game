@@ -1,6 +1,6 @@
 import express from 'express'
 import cors from 'cors'
-import http from 'http'
+import http, { get } from 'http'
 import { Server } from 'socket.io'
 import { login } from './controller/login/loginHelper.js'
 import "reflect-metadata"
@@ -113,7 +113,7 @@ api.on('connection', async (socket) => {
     socket.on('playerStatsAll', async () => {
         try {
             const leader = await getLeaderboard()
-            socket.emit('playerStatsAll_success', getLeaderboard())
+            socket.emit('playerStatsAll_success', leader)
         }
         catch (error) {
             console.log(error)

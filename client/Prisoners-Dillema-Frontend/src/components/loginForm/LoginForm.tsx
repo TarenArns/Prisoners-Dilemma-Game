@@ -1,6 +1,9 @@
 import { postRequest } from '../../utils/apiRequests';
+import { useNavigate } from 'react-router-dom';
 
 function LoginForm() {
+
+    const navigate = useNavigate();
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -10,7 +13,7 @@ function LoginForm() {
 
         const response = await postRequest("/login", { user: username }) as any;
         if(response.data === "SUCCESS") {
-            window.location.href = "/lobbySelect";
+            navigate("/lobbySelect");
         }
         else {
             alert("Login failed. Please try again.");
