@@ -2,7 +2,7 @@ import LoginForm from '../../components/loginForm/LoginForm'
 import useWindowDimensions from '../../hooks/windowDimensions'
 
 function LoginPage() {
-  const { height, width } = useWindowDimensions();
+  const { width } = useWindowDimensions();
 
   if (width < 723) {
     return (
