@@ -2,7 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/login/LoginPage';
 import LobbySelect from './pages/lobbySelect/LobbySelectPage';
 import Lobby from './pages/lobby/LobbyPage';
-import Game from './pages/game/gamePage';
+import Game from './pages/game/GamePage';
 function App() {
   return (
     <Routes>
@@ -11,8 +11,7 @@ function App() {
       <Route path="/login" element={<Login />} />'
       <Route path="/lobbySelect" element={<LobbySelect />} />'
       <Route path="/lobby" element={<Lobby />} />'
-            <Route path="/game" element={<Game />} />'
-
+      <Route path="/game" element={<Game />} />'
     </Routes>
   );
 }

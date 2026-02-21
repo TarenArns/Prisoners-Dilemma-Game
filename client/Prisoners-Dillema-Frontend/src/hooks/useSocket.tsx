@@ -4,13 +4,9 @@ import { io, Socket } from "socket.io-client";
 const SocketContext = createContext<Socket | null>(null);
 
 export function SocketProvider({ children }: { children: React.ReactNode }) {
-  const [socket] = useState(() => io("http://localhost:6769"));
-
-  useEffect(() => {
-    return () => {
-      socket.disconnect();
-    };
-  }, [socket]);
+  const [socket] = useState(() =>
+    io("http://localhost:6769", { withCredentials: true, autoConnect: false })
+  );
 
   return <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>;
 }

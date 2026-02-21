@@ -2,7 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import http from 'http'
 import { Server } from 'socket.io'
-import { login } from'./controller/login/loginHelper.js'
+import { login } from './controller/login/loginHelper.js'
 
 import { fetchRecord, addRecord } from "./services/database/databaseHelper.js"
 
@@ -12,14 +12,23 @@ import { Player } from "./services/entity/Player.js"
 
 const app = express()
 app.use(cors({
-  origin: "http://localhost:5173",
-  credentials: true
+    origin: "http://localhost:5173",
+    credentials: true
 }));
 app.use(express.json())
 
 const server = http.createServer(app)
-const api = new Server(server, { cors: { origin: "*"}})
+const api = new Server(server, {
+    cors: {
+        origin: "http://localhost:5173",
+        credentials: true,
+        methods: ["GET", "POST"]
+    },
+    pingTimeout: 60000,
+    pingInterval: 25000
+})
 
+const clients = new Map<string, any>()
 const port = 6769
 
 export const AppDataSource = new DataSource({
@@ -39,13 +48,13 @@ try {
 app.post("/login", async (req, res) => {
     const user = req?.body?.user
 
-    if(!user) {
+    if (!user) {
         return res.status(500).send("FAILED")
     }
 
     const ok = await login(req.body.user)
 
-    if(ok) {
+    if (ok) {
         res.cookie('token', user, {
             httpOnly: true,
             secure: false,
@@ -61,11 +70,26 @@ app.post("/login", async (req, res) => {
 })
 
 api.on('connection', (socket) => {
-    socket.on('login', (data) => {
-        login(data?.user)
-        socket.emit("request_response", { status: "success", message: "Logged in"})
+    const token = socket.handshake.headers.cookie?.split('token=')[1]?.split(';')[0]
+
+    if (token) {
+        clients.set(socket.id, { socketId: socket.id, user: token })
+        console.log(`connected!! ${socket.id}, user: ${token}`)
+    } else {
+        console.log(`loser has no token so were kicking them out: ${socket.id}`)
+        socket.disconnect()
+        return
+    }
+
+    socket.on('disconnect', (reason) => {
+        console.log(`Client disconnected: ${socket.id}, reason: ${reason}`)
+        clients.delete(socket.id)
     })
 
+
+    socket.on('error', (error) => {
+        console.error(`error (oh no): ${socket.id}`, error)
+    })
 })
 
 server.listen(port, () => {

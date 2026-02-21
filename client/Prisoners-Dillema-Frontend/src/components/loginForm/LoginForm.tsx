@@ -8,8 +8,13 @@ function LoginForm() {
         const formData = new FormData(form);
         const username = formData.get("username");
 
-        const response = await postRequest("/login", { user: username });
-        console.log(response.data);
+        const response = await postRequest("/login", { user: username }) as any;
+        if(response.data === "SUCCESS") {
+            window.location.href = "/lobbySelect";
+        }
+        else {
+            alert("Login failed. Please try again.");
+        }
     }
 
     return (
