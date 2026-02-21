@@ -18,11 +18,6 @@ const port = 6769
 
 app.post("/login", (req, res) => {
     const user = req?.body?.user
-
-    if(!user) {
-        res.status(500).send("FAILED")
-    }
-
     const ok = login(req.body.user)
 
     if(ok) {
@@ -34,6 +29,10 @@ app.post("/login", (req, res) => {
         })
 
         res.status(200).send("SUCCESS")
+    }
+    
+    else if(!user) {
+        return res.status(500).send("FAILED")
     }
     else {
         res.status(401).send("FAIL")
