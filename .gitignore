@@ -1,4 +1,6 @@
 .direnv/
 server/dist
-server/package-lock.json
+package-lock.json
 client/Prisoners-Dillema-Frontend/package-lock.json
+flake.nix
+flake.lock
