@@ -63,9 +63,11 @@ class Prisoner {
 
     // PLAYERS ONLY
     private async waitForChoice() { // needed separately bc uses class vars
-        await new Promise(() => {while (this._waiting);})
-        this._waiting = true
-        return this._last_choice
+        let p = new Promise(() => {
+            while (this._waiting);
+            this._waiting = true
+        })
+        return p
     }
 
     public async changeLastChoice(c: Choice) {
@@ -110,15 +112,21 @@ class Match {
     private ready = true
 
     public async getHistory(user: string) {
-        await new Promise(() => {while (!this.ready);})
-        switch (user) {
-            case this.p1.user :
-                return [this.h1, this.h2]
-            case this.p2.user :
-                return [this.h2, this.h1]
-            default :
-                return [[], []]
-        }
+        let p = new Promise(() => {
+            while (!this.ready);
+            this.ready = false
+
+            switch (user) {
+                case this.p1.user :
+                    return [this.h1, this.h2]
+                case this.p2.user :
+                    return [this.h2, this.h1]
+                default :
+                    return [[], []]
+            }
+        })
+
+        return p
     }
 
     public constructor(p1: Prisoner, p2: Prisoner, length: number, 
