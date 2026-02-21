@@ -26,8 +26,10 @@ app.post("/api/login", (req, res) => {
             maxAge: 7200000
         })
 
-        res.status(200).json({message: "SUCCESS"})
+        res.status(200).send("SUCCESS")
     }
+
+    res.status(401).send("FAIL")
     
 })
 
