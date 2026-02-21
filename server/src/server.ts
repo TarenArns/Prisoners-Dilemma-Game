@@ -3,12 +3,12 @@ import cors from 'cors'
 import http from 'http'
 import { Server } from 'socket.io'
 import { login } from './controller/login/loginHelper.js'
-
-import { fetchRecord, addRecord } from "./services/database/databaseHelper.js"
-
 import "reflect-metadata"
 import { DataSource } from "typeorm"
 import { Player } from "./services/entity/Player.js"
+import { createGame } from "./controller/game/initGame.js"
+import { Game } from "./services/index.js"
+import { getLeaderboard } from './controller/game/stats.js'
 
 const app = express()
 app.use(cors({
@@ -70,6 +70,7 @@ app.post("/login", async (req, res) => {
 })
 
 api.on('connection', (socket) => {
+    let gameSingleton: Game
     const token = socket.handshake.headers.cookie?.split('token=')[1]?.split(';')[0]
 
     if (token) {
@@ -89,6 +90,34 @@ api.on('connection', (socket) => {
 
     socket.on('error', (error) => {
         console.error(`error (oh no): ${socket.id}`, error)
+    })
+
+    socket.on('join', (typeGame) => {
+        try {
+            if(!gameSingleton) {
+
+                gameSingleton = createGame(typeGame)
+            }
+
+            gameSingleton.addPrisoner({[token]: 'player'})
+            
+            socket.emit('join_success', {message: "SUCCESS"})
+        }
+        catch (error) {
+            console.log(error)
+            socket.emit('join_failed', {message: "FAIL"})
+        }
+    })
+
+    socket.on('playerStatsAll', () => {
+        try {
+            const leader = getLeaderboard()
+            socket.emit('playerStatsAll_success', getLeaderboard())
+        }
+        catch (error) {
+            console.log(error)
+            socket.emit('playerStats_failed', {message: "FAIL"})
+        }
     })
 })
 
