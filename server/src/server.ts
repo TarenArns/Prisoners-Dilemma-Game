@@ -95,9 +95,19 @@ api.on("connection", (socket) => {
 });
 
 app.get("/playerStats", async (req, res) => {
-  const players = fetchRecord(null);
+  const players = await fetchRecord(null);
 
   res.status(200).json(players);
+});
+
+app.get("/playerStats/:username", async (req, res) => {
+  const player = await fetchRecord(req.params.username);
+
+  if (player === null) {
+    res.status(401).send("User not found.");
+  }
+
+  res.status(200).json(player);
 });
 
 server.listen(port, () => {
