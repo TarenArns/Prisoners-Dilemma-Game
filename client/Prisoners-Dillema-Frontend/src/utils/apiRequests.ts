@@ -1,12 +1,9 @@
-import { io } from "socket.io-client";
+import axios from "axios";
 
-export const socket = io("http://localhost:6769");
+const BACKEND_URL = "http://localhost:6769";
 
 export function getRequest(endpoint: string) {
-  socket.emit(endpoint);
-  socket.on("request_response", (data) => {
-    console.log(data)
-  })
+  
 }
 
 export async function postRequest(endpoint: string, payload: any) {
