@@ -27,7 +27,8 @@ const SCORING = { // SCORING[choice1][choice2] returns [score1, score2]
     1: { 0: [0, 3], 1: [2, 2] }
 }
 
-enum Choice { def=0, coop }
+const Choice = { def: 0, coop: 1 } as const
+type Choice = (typeof Choice)[keyof typeof Choice]
 
 abstract class Prisoner {
     private _user: string;
@@ -36,8 +37,10 @@ abstract class Prisoner {
 
     protected abstract choose(oppHistory: Choice[]): Choice
 
-    public makeChoice(oppHistory: Choice[]): Choice {
-        let c = this.choose(oppHistory)
+    public async makeChoice(oppHistory: Choice[]) {
+        let c = await new Promise<Choice>((resolve) => {
+            resolve(this.choose(oppHistory))
+        })
         this._history.push(c)
         return c
     }
@@ -53,15 +56,16 @@ abstract class Prisoner {
     public get history(): Choice[] {return this._history}
 }
 
-class Player extends Prisoner {
-    protected choose(history: Choice[]): Choice {
-        return Choice.def
+class Random extends Prisoner {
+    protected choose(): Choice { // TODO: implement choosing
+        return Math.random() < 0.5 ? Choice.def : Choice.coop;
     }
 }
 
-class Random extends Prisoner {
-    protected choose(history: Choice[]): Choice { // TODO: implement choosing
-        return Math.random() < 0.5 ? Choice.def : Choice.coop;
+/*
+class Player extends Prisoner {
+    protected choose(history: Choice[]): Choice {
+        return Choice.def
     }
 }
 
@@ -79,6 +83,7 @@ class Tit4Tat extends Prisoner {
         else { return Choice.coop }
     }
 }
+*/
 
 class Match {
     private p1: Prisoner
@@ -93,13 +98,17 @@ class Match {
         this.length = length
     }
 
-    public run(): void {
+    public async run() {
         for (let i=0; i<this.length; i++) {
             // TODO: should be async or something?
-            let c1 = this.p1.makeChoice(this.p2.history)
-            let c2 = this.p2.makeChoice(this.p1.history)
-            let scores = SCORING[`${c1}`][`${c2}`]
-            this.history.push([c1, c2])
+
+            let choices = await Promise.all([
+                this.p1.makeChoice(this.p2.history),
+                this.p2.makeChoice(this.p1.history)
+            ])
+
+            this.history.push([choices[0], choices[1]]) // TODO how to handle history?
+            let scores = SCORING[`${choices[0]}`][`${choices[1]}`]
             this.p1.addScore(scores[0])
             this.p2.addScore(scores[1])
         }
@@ -109,36 +118,41 @@ class Match {
     }
 }
 
-class Tournament {
-    public prisoners: Prisoner[]
+class Game {
+    private prisoners: Prisoner[]
 
-    public constructor(players: Prisoner[]) {
-        this.prisoners = players;
+    public constructor(prisoners: Prisoner[]) {
+        this.prisoners = prisoners;
+    }
+
+    public async run() {
+        // Pair up all players
+        let matchThreads: Promise<void>[] = []
+        for (let i in this.prisoners) {
+            let p1 = this.prisoners[i];
+            for (let j in this.prisoners.slice(+i+1)) {
+                let p2 = this.prisoners[j];
+                matchThreads.push(new Match(p1, p2, MATCH_ROUNDS).run())
+            }
+        }
+
+        await Promise.all(matchThreads)
+
+        for (let p of this.prisoners) {
+            console.log(`${p.user}: ${p.score}`)
+        }
+
     }
 }
 
 /***************************************************
- * vvv ACTUAL CODE vvv
+ * vvv MAIN vvv
  **************************************************/
 
-// Initialize tournament with players (simulated)
-let trnmt: Tournament = new Tournament(
-    [new Defecator("Defecator1"), new Tit4Tat("Tit4Tat1"),
-    new Defecator("Defecator2"), new Cooperator("Cooperator1"),
-    new Random("Random1")]
-)
-
-// Pair up all players
-for (let i=0; i<trnmt.prisoners.length; i++) {
-    let p1 = trnmt.prisoners[i];
-    for (let j=i+1; j<trnmt.prisoners.length; j++) {
-        let p2 = trnmt.prisoners[j];
-
-        let match: Match = new Match(p1, p2, MATCH_ROUNDS);
-        match.run();
-    }
-}
-
-for (let p of trnmt.prisoners) {
-    console.log(`${p.user}: ${p.score}`)
-}
+// Initialize game with players (simulated)
+await new Game(
+    [new Random("hi"), new Random("me")]
+    // [new Defecator("Defecator1"), new Tit4Tat("Tit4Tat1"),
+    // new Defecator("Defecator2"), new Cooperator("Cooperator1"),
+    // new Random("Random1")]
+).run()
