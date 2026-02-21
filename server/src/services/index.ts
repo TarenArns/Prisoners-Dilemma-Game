@@ -63,9 +63,10 @@ class Prisoner {
 
     // PLAYERS ONLY
     private async waitForChoice() { // needed separately bc uses class vars
-        let p = new Promise(() => {
+        let p = new Promise<Choice>(() => {
             while (this._waiting);
             this._waiting = true
+            return this._last_choice
         })
         return p
     }
@@ -112,7 +113,7 @@ class Match {
     private ready = true
 
     public async getHistory(user: string) {
-        let p = new Promise(() => {
+        let p = new Promise<[Choice[], Choice[]]>(() => {
             while (!this.ready);
             this.ready = false
 
