@@ -17,8 +17,6 @@ const api = new Server(server, { cors: { origin: "*"}})
 const port = 6769
 
 app.post("/login", (req, res) => {
-    console.log("hello")
-    console.log(req.body)
     const user = req?.body?.user
 
     if(!user) {
