@@ -12,6 +12,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Player = void 0;
 const typeorm_1 = require("typeorm");
 let Player = class Player {
+    constructor(username, currentScore, totalScore, totalWins, colludeCount, defectCount) {
+        this.username = username;
+        this.currentScore = currentScore;
+        this.totalScore = totalScore;
+        this.totalWins = totalWins;
+        this.colludeCount = colludeCount;
+        this.defectCount = defectCount;
+    }
 };
 exports.Player = Player;
 __decorate([
@@ -39,5 +47,6 @@ __decorate([
     __metadata("design:type", Number)
 ], Player.prototype, "defectCount", void 0);
 exports.Player = Player = __decorate([
-    (0, typeorm_1.Entity)()
+    (0, typeorm_1.Entity)(),
+    __metadata("design:paramtypes", [String, Number, Number, Number, Number, Number])
 ], Player);
