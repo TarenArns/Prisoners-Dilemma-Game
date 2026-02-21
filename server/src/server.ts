@@ -70,8 +70,8 @@ app.post("/login", async (req, res) => {
     }
 })
 
-api.on('connection', (socket) => {
-    let gameSingleton: Game
+api.on('connection', async (socket) => {
+    let gameSingleton: Game | null = null
     const token = socket.handshake.headers.cookie?.split('token=')[1]?.split(';')[0]
 
     if (token) {
@@ -123,13 +123,38 @@ api.on('connection', (socket) => {
 
     socket.on('action', (decision) => {
         try {
-            gameSingleton.makeChoice(token, decision);
-            socket.emit('action_success', {message: 'success'})        
+            if(gameSingleton) {
+                gameSingleton.makeChoice(token, decision);
+                socket.emit('action_success', {message: 'success'}) 
+            }
+            else {
+                socket.emit('action_fail', {message: "FAIL"})
+            }     
         }
         catch {
             socket.emit('action_fail', {message: "FAIL"})
         }
     })
+
+    socket.on('gameStart', () => {
+        try {
+            if(gameSingleton) {
+                gameSingleton.run();
+                socket.emit('gameStart_success', {message: 'success'})   
+            } 
+            else {
+                socket.emit('gameStart_fail', {message: "FAIL"})
+            }    
+        }
+        catch {
+            socket.emit('gameStart_fail', {message: "FAIL"})
+        }
+    })
+
+    if(gameSingleton) {
+        const history = await gameSingleton.getHistory()
+        socket.emit('gameState', history)
+    }
 })
 
 server.listen(port, () => {
