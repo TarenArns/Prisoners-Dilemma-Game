@@ -1,11 +1,16 @@
+import { useNavigate } from 'react-router-dom';
 import { useSocket } from '../../hooks/useSocket';
 
 function LoginForm() {
     const socket = useSocket();
+    const navigate = useNavigate();
 
     function handleSubmit(formData: any) {
         const username = formData.get('username');
-        socket.emit('/login', { user: username });
+        socket.emit('login', { user: username });
+        socket.on("request_response", () => {
+            navigate('/lobbyselect');
+        })
     }
 
     return (
