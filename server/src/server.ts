@@ -16,6 +16,20 @@ const api = new Server(server, { cors: { origin: "*" } })
 
 const port = 6769
 
+export const AppDataSource = new DataSource({
+  type: "sqlite",
+  database: "prisoners.db",
+  entities: [Player],
+  synchronize: true,
+  logging: false,
+})
+
+try {
+  AppDataSource.initialize()
+} catch (error) {
+  console.log(error)
+}
+
 app.post("/api/login", (req, res) => {
   const user = req?.body?.user
 
@@ -51,24 +65,4 @@ server.listen(port, () => {
 });
 
 
-export const AppDataSource = new DataSource({
-  type: "sqlite",
-  database: "prisoners.db",
-  entities: [Player],
-  synchronize: true,
-  logging: false,
-})
 
-try {
-  AppDataSource.initialize()
-} catch (error) {
-  console.log(error)
-}
-
-// io.on('login', (socket: any) => {
-//   const user = socket.handshake.query.userName
-// 
-//   if (user && !fetchRecord(user)) {
-//     addRecord({ username: user })
-//   }
-// })

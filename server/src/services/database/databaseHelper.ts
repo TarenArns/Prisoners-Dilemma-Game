@@ -41,9 +41,9 @@ export async function deleteRecord(key: databaseKey, fields: any) {
   await playerRepository.remove(playerToRemove)
 }
 
-export async function fetchRecord(key: databaseKey) {
+export async function fetchRecord(user: string) {
   const playerRepository = AppDataSource.getRepository(Player)
-  const player = await playerRepository.findOneBy({ username: key.value })
+  const player = await playerRepository.findOneBy({ username: user })
 
   if (!player) {
     console.log("User with username ${key.value} not found.")
