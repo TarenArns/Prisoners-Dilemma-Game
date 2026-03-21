@@ -1,8 +1,8 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/login/LoginPage';
 import LobbySelect from './pages/lobbySelect/LobbySelectPage';
-import Lobby from './pages/lobby/LobbyPage';
-import Game from './pages/game/GamePage';
+import Lobby from './pages/lobby/lobbyPage';
+import Game from './pages/game/gamePage';
 function App() {
   return (
     <Routes>
